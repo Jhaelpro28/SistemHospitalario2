@@ -1,0 +1,220 @@
+@startuml
+skinparam classAttributeIconSize 0
+enum EstadoCita{
+Pendiente
+Confirmada
+En_Atencion
+Completada
+Cancelada
+}
+enum Turno{
+MANANA
+TARDE
+NOCHE
+}
+abstract class Persona{
+- id: String
+    - nombre: String
+    - apellido: String
+    - fechaNacimiento: LocalDate
+    - email: String
+    
+    
+    + {abstract} calcularEdad(): int
+    + {abstract} obtenerTipo(): String
+    + getfechaNacimiento(): LocalDate
+    + getNombre(): String
+    + setNombre(nombre: String): void
+    + getApellido(): String
+    + setApellido(apellido: String): void
+    + getEmail(): String
+    + setEmail(email: String): void
+    + getId(): String
+    + setId(id: String): void
+    + setFechaNacimiento(fechaNacimiento: LocalDate): void
+}
+abstract class Empleado{
+- legajo: String
+- fechaContratacion: LocalDate
++ salarioBase: double
+- activo: boolean
+    
+    
++ {abstract} calcularSalario(): double
++ antiguedad(): int
++ getsalarioBase(): double
++ setsalarioBase(salarioBase: double): void
++ getLegajo(): String
++ setLegajo(legajo: String): void
++ isActivo(): boolean
++ setActivo(activo: boolean): void
+}
+abstract class Paciente{
+- historiaClinica: String
+- grupoSanguineo: String
+- alergias: ArrayList<String>
+- citas: ArrayList<CitaMedica>
+
+    
++ calcularEdad(): int
++ obtenerTipo(): String
++ agregarAlergia(alergia: String): void
++ obtenerHistorial(): List<CitaMedica>
++ getGrupoSanguineo(): String
++ setGrupoSanguineo(grupo: String): void
++ getAlergias(): List<String>
++ setHistoriaClinicaId(id: String): void
+}
++abstract class Medico{
+- numeroLicencia: int
+- especialidad: Especialidad
+- pacientesAsignados: List<Paciente>
+- citasAsignadas: List<Citamedica>
+- turno: Turno
+
+    
++ calcularSalario(): double
++ obtenerTipo(): String
++ calcularEdad(): int
++ atenderPaciente(paciente: Paciente, cita: Citamedica): void
++ getPacientesAsignados(): List<Paciente>
++ getCitasAtendidas(): List<Citamedica>
++ setNumeroLicencia(licencia: String): void
++ setEspecialidad(especialidad: Especialidad): void
++ getNumeroLicencia():int
+}
++class Cirujano{
+- cirugiasRealizadas: int
+- disponibleEmergencia: boolean
+    
++ realizarCirugias(): void
++ calcularBono(): int
++ calcularSalario(): double
++ obtenerTipo(): String
++ getCirugiasRealizadas(): int
++ isdisponibleEmergencia(): boolean
+}
++class Enfermero{
+- turno: Turno
+- areaAsignada: String
+- pacientesACargo: int
+    
++ calcularSalario(): double
++ calcularEdad(): int
++ obtenerTipo(): String
++ asistirCirugia(): void
++ getTurno(): Turno
++ getAreaAsginada(): String
++ getPacientesACargo(): int
++ setTurno(turno: Turno): void
++ setAreaAsignada(area: String): void
++ setPacientesACargo(cantidad: int): void
+}
++class Hospital{
+-nombre: String
+-direccion: String
+-empleado: ArrayList<Empleado>
+-paciente: ArrayList<Paciente>
+-citas: ArrayList<Citamedica>
+
++contratarEmpleado(): void
++agregarPaciente(): void
++agendarCita(): void
++calcularNominaTotal(): double
++ getEmpleado(): ArrayList<Empleado>
++ getPacientes(): ArrayList<Paciente>
++ getCitas(): ArrayList<Citamedica>
++buscarEmpleado(): Empleado
++buscarPaciente(id: String): Paciente
++registrarPaciente(): void
+}
++class Citamedica{
+-id:int
+-paciente: Paciente
+-medico: Medico
+-fechaHora: LocalDateTime
+-motivo: String
+-estado: EstadoCita
+-costo: double
+-diagnostico: Diagnostico
+
++calcularCosto():double
++completar(): void
++cancelada(): void
++asignarDiagnostico(): void
++getPaciente(): Paciente
++getMedico(): Medico
++getCosto(): double
++setCosto(costo : double): void
+
+}
++class Especialidad{
+-codigo: String
+-nombre: String
+-descripcion: String
+-costoConsulta: double
+
++getCostoConsulta(): double
++getCodigo(): String
++setCodigo(codigo: String): void
++getNombre(): String
++setNombre(nombre: String): void
++getDescripcion(): String
++setDescripcion(descripcion: String): void
+}
++class Diagnostico{
+- id: int
+- descripcion: String
+-receta: String
+-fecha: LocalDate
+-medico: Medico
+
++getid():int
++setid(id: int): void
++getDescripcion():String
++setDescripcion( descripcion : String): void
++getReceta(): String
++setReceta(receta: String): void
++getFecha(): LocalDate
++setFecha(fecha: LocalDate): void
++getMedico(): Medico
++setMedico(medico: Medico): void
+}
+
+Persona <|-- Empleado
+Empleado <|-- Medico
+Empleado <|-- Enfermero
+Medico <|-- Cirujano
+Persona <|-- Paciente
+
+Hospital"1" *-- "0..*" Citamedica: contiene >
+
+Citamedica"1" *-- "0..*" Diagnostico: incluye >
+
+Medico "1" *-- "0..*" Especialidad: posee>
+
+Citamedica "0..*" o-- "1" Paciente: atiende a >
+Citamedica"0..*" o-- "1" Medico: asignada a >
+
+Hospital "1" o-- "*" Empleado: emplea>
+Hospital "1" o-- "*" Paciente: registra>
+
+
+Hospital ..> Paciente: <use>
+
+Hospital ..> Empleado: <use>
+
+Empleado <|.. Turno: <use>
+
+Medico ..> Diagnostico : <<crea>>
+
+Medico "1" -- "0..*" Citamedica : atiende >
+
+
+Citamedica <|.. EstadoCita
+
+Medico <|.. Turno
+
+
+
+@enduml
