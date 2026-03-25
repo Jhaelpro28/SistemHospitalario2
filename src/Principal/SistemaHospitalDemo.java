@@ -48,6 +48,7 @@ public class SistemaHospitalDemo {
             System.out.println("1. Registrar paciente");
             System.out.println("2. Registrar alergias");
             System.out.println("3. Consultar historial de citas medicas");
+            System.out.println("0. Volver al menu principal.");
             System.out.println("Seleccione una opcion");
             op1 = sc.nextInt();
             sc.nextLine();
@@ -93,6 +94,27 @@ public class SistemaHospitalDemo {
                     }
                 case 3:
                     System.out.println("Historial clinico");
+                    System.out.println("Ingrese el ID del paciente a consultar ");
+                    String idH = sc.nextLine();
+                    boolean tieneCita = false;
+                    
+                    System.out.println("Cita encontrada del ID: " + idH + ":");
+                    for(Citamedica cita : hospital.getCitas()){
+                        if(cita.getPaciente().getId().equalsIgnoreCase(idH)){
+                            System.out.println("============================");
+                            System.out.println("Fecha: " + cita.getFechaHora());
+                            System.out.println("Medico: " + cita.getMedico().getNombre());
+                            System.out.println("Estado: " + cita.getEstado());
+                            
+                            if(cita.getDiagnostico() != null){
+                                System.out.println("Diagnostico: " + cita.getDiagnostico());
+                            }
+                            tieneCita = true;
+                        }
+                    }
+                    if(!tieneCita){
+                        System.out.println("El paciente no tiene cita registrada:");
+                    }
                     break;
                 
 
@@ -118,7 +140,7 @@ public class SistemaHospitalDemo {
             String id = sc.nextLine();
 
             if (hospital.buscarEmpleado(id) != null) {
-                System.out.println("❌ ERROR: Empleado con ID [" + id + "] ya está en el sistema.");
+                System.out.println(" ERROR: Empleado con ID [" + id + "] ya está en el sistema.");
                 continue; // Regresa al inicio del menú sin pedir más datos
             }
 
@@ -158,7 +180,7 @@ public class SistemaHospitalDemo {
                 
                 // ¡IMPORTANTE! Guardar en el hospital
                 hospital.contratarEmpleado(nuevoMedico);
-                System.out.println("✅ Médico registrado correctamente.");
+                System.out.println(" Médico registrado correctamente.");
 
             } else if (op2 == 2) { // CIRUJANO
                 System.out.print("Nombre Especialidad: "); String nEspc = sc.nextLine();
@@ -176,7 +198,7 @@ public class SistemaHospitalDemo {
                 nuevoCirujano.setsalarioBase(salarioBase);
                 nuevoCirujano.setEmail(email);
                 hospital.contratarEmpleado(nuevoCirujano);
-                System.out.println("✅ Cirujano registrado correctamente.");
+                System.out.println(" Cirujano registrado correctamente.");
 
             } else if (op2 == 3) { // ENFERMERO
                 System.out.print("¿Tiene disponibilidad? (true/false): "); boolean disp = sc.nextBoolean();
@@ -185,7 +207,7 @@ public class SistemaHospitalDemo {
                 Enfermero nuevoEnfermero = new Enfermero(id, nombre, apellido, LocalDate.now(), email, legajo, LocalDate.now(), salarioBase, true,turnoSel,"",0) {};
                 
                 hospital.contratarEmpleado(nuevoEnfermero);
-                System.out.println("✅ Enfermero registrado correctamente.");
+                System.out.println(" Enfermero registrado correctamente.");
             }
 
         } else if (op2 == 4) {
@@ -202,7 +224,7 @@ public class SistemaHospitalDemo {
             System.out.println("Nombre: " + e.getNombre() + " " + e.getApellido());
             System.out.println("Legajo: " + e.getLegajo());
             System.out.println("Email: " + e.getEmail());
-            System.out.println("Salario Base: $" + e.getSalarioBase());
+            System.out.println("Salario Base: " + e.getSalarioBase());
             
             // Si el empleado es un Medico, mostramos sus datos extra
             if (e instanceof Medico) {
@@ -269,7 +291,7 @@ do {
                     Medico medico = (Medico) emp;
                     
                     if (!medico.isActivo()) {
-                        System.out.println("❌ ERROR: El médico no está disponible (Inactivo).");
+                        System.out.println(" ERROR: El médico no está disponible (Inactivo).");
                         break;
                     }
 
@@ -287,7 +309,7 @@ do {
                     // Recargo por jerarquía (Si es Cirujano)
                     if (medico instanceof Cirujano) {
                         costoTotal += 500; 
-                        System.out.println("ℹ️ Nota: Se aplicó recargo de $500 por honorarios de Cirugía.");
+                        System.out.println("️ Nota: Se aplicó recargo de $500 por honorarios de Cirugía.");
                     }
 
                     
@@ -297,10 +319,10 @@ do {
                     nuevaCita.setCosto(costoTotal);
                     hospital.getCitas().add(nuevaCita);
                     System.out.println("cita agendada exitosamente.");
-                    System.out.println(" Costo total de atención: $" + costoTotal);
+                    System.out.println(" Costo total de atención: " + costoTotal);
 
                 } else {
-                    System.out.println("❌ ERROR: El ID ingresado no corresponde a un personal médico.");
+                    System.out.println(" ERROR: El ID ingresado no corresponde a un personal médico.");
                 }
                 break;
 
@@ -350,7 +372,7 @@ do {
 
                         
                         c.setEstado(EstadoCita.Completada);
-                        System.out.println("✅ Consulta finalizada y guardada con éxito.");
+                        System.out.println(" Consulta finalizada y guardada con éxito.");
                         encontrado = true;
                         break;
                     }
